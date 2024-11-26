@@ -2,21 +2,22 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
+use MongoDB\Laravel\Eloquent\Model;
 class Project extends Model
 {
     protected $connection = 'mongodb';
     protected $fillable = [
         "projectName",
-        "listofTechnoglogiesUsed",
+        "listOfTechUsed",
         "startTime",
         "endTime",
         "projectDescription",
-        "projectImage"
     ];
-    protected $casts = [
-        'listofTechnoglogiesUsed' => 'array', 
-    ];
-    public $timesstamps = true;
+    // protected  function casts():array{
+    //     return [
+    //         "listTechUsed" => 'array',
+    //     ];
+    // }
+    public $timestamps = true;
+
 }

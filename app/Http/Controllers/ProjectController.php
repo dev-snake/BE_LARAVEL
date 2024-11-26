@@ -1,9 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
+use Carbon\Carbon;
 
 use Illuminate\Http\Request;
 use App\Models\Project;
+use Illuminate\Support\Facades\Validator;
 
 class ProjectController extends Controller
 {
@@ -12,26 +14,47 @@ class ProjectController extends Controller
      */
     public function getAll()
     {
-       return response('ok', 200);
+        $project = Project::get();
+        return response()->json([
+        "results"=> $project,
+        "message"=> 'Get all projects successfully !',
+        "status" => 'success'
+       ] , 200);
     }
-    public function getOne(){
-        
+    public function getOne(string $projectId){
+        $getProject = Project::find( $projectId);
+        if(!$getProject){
+            return response('Not Found !' , 404);
+        };
+        return response()->json([
+            'results'=> $getProject,
+            "message" => 'Get one project successfully !',
+            "status" => 'success'
+
+            
+        ] , 200);
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        $project = Project::create([
-        "projectName"=> 'Ahihi',
-        "listofTechnoglogiesUsed" => ['js' , 'php'],
-        "startTime" => '1',
-        "endTime" => '1',
-        "projectDescription" => '1',
-        "projectImage"=> '1'
+
+        $validator = Validator::make($request->all(), [
+            'projectName' => 'required|max:255',
         ]);
-        return response('Created Project successfully !' , 200);
+        if ($validator->fails()) {
+            return response( $validator-> errors());
+        }
+        $project = Project::create( $request->all());
+    
+        return response()->json([
+            "data"=> $project,
+            "message" => "Created product successfully !",
+            "status"=> "success"
+        ], 201);
+    
     }
 
     /**
@@ -53,9 +76,26 @@ class ProjectController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(string $projectId , Request $request)
     {
-        //
+        $project = Project::where('_id', $projectId)->first();
+
+        if (!$project) {
+            return response()->json([
+                'message' => 'Project not found!',
+                'status' => 'error'
+            ], 404);
+        }
+        
+        $project->update($request->all());
+        
+        return response()->json([
+            'results' => $project,
+            'message' => 'Updated successfully!',
+            'status' => 'success'
+        ], 200);
+        
+
     }
 
     /**
@@ -69,8 +109,18 @@ class ProjectController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $projectId)
     {
-        //
+     
+        $project = Project::where('_id' , $projectId)->delete();
+        if(!$project){
+            return response()->json([
+                "message"=> 'Error'
+            ],500);
+        }
+        return response()->json([
+            'message'=> 'Deleted successfully !',
+            'status'=> 'success'
+        ],200);
     }
 }

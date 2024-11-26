@@ -50,7 +50,7 @@ class ProjectController extends Controller
         $project = Project::create( $request->all());
     
         return response()->json([
-            "data"=> $project,
+            "results"=> $project,
             "message" => "Created product successfully !",
             "status"=> "success"
         ], 201);

@@ -34,7 +34,7 @@ class AuthController extends Controller
         $newUser = User::create($request->all());
 
         return response()->json([
-            'data' => $newUser,
+            'results' => $newUser,
             'message' => 'Resigted account successfullly !',
             "status"=> 'success'
         ]);
